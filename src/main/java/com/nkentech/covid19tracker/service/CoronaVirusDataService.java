@@ -4,6 +4,7 @@ import com.nkentech.covid19tracker.models.LocationStats;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class CoronaVirusDataService {
 
     private static final String VIRUS_DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
@@ -53,12 +55,11 @@ public class CoronaVirusDataService {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(VIRUS_DATA_URL))
                 .build();
-        HttpResponse<String> httpResponse = client.send(
+
+        return client.send(
                 request,
                 HttpResponse.BodyHandlers.ofString()
         );
-
-        return httpResponse;
     }
 
 
