@@ -15,6 +15,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CoronaVirusDataService {
@@ -49,6 +51,39 @@ public class CoronaVirusDataService {
         return allStats;
     }
 
+    public List<LocationStats> search(String search){
+        List<LocationStats> allSearch = new ArrayList<>();
+        ;
+        if(allSearch == null) {
+            allSearch.addAll(searchByState(search));
+            if(allSearch != null){
+                return allSearch;
+            }else{
+                allSearch.addAll(searchByCountry(search));
+                if(!allSearch.isEmpty()){
+                    return allSearch;
+                }else {
+                    return null;
+                }
+            }
+        }else {
+            return null;
+        }
+
+    }
+
+
+    private List<LocationStats> searchByState(String search){
+         return this.getAllStats().stream()
+                .filter(locationStats -> locationStats.getState().equalsIgnoreCase(search))
+                .collect(Collectors.toList());
+    }
+
+    private List<LocationStats> searchByCountry(String search){
+        return this.getAllStats().stream()
+                .filter(locationStats -> locationStats.getCountry().equalsIgnoreCase(search))
+                .collect(Collectors.toList());
+    }
 
     private HttpResponse<String> fetchVirusData() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
@@ -56,10 +91,7 @@ public class CoronaVirusDataService {
                 .uri(URI.create(VIRUS_DATA_URL))
                 .build();
 
-        return client.send(
-                request,
-                HttpResponse.BodyHandlers.ofString()
-        );
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
 
