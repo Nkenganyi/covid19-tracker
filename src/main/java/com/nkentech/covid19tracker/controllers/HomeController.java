@@ -23,7 +23,7 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/search/{search}", method = RequestMethod.GET)
-    public List<LocationStats>search(@PathVariable(value = "search") String search){
+    public List<LocationStats>search(@PathVariable(value = "search") String search)throws Exception{
         return coronaVirusDataService.search(search);
     }
 
