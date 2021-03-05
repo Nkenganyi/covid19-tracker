@@ -51,32 +51,30 @@ public class CoronaVirusDataService {
         return allStats;
     }
 
-    public List<LocationStats> search(String search){
+    public List<LocationStats> search(String search) throws Exception{
         List<LocationStats> allSearch = new ArrayList<>();
         ;
-        if(allSearch == null) {
-            allSearch.addAll(searchByState(search));
-            if(allSearch != null){
-                return allSearch;
-            }else{
-                allSearch.addAll(searchByCountry(search));
-                if(!allSearch.isEmpty()){
-                    return allSearch;
-                }else {
-                    return null;
-                }
+        if(allSearch.isEmpty()) {
+            LocationStats stats = searchByState(search);
+            if(stats != null){
+                allSearch.add(stats);
             }
-        }else {
-            return null;
+            else{
+                allSearch.addAll(searchByCountry(search));
+            }
         }
-
+        return allSearch;
     }
 
 
-    private List<LocationStats> searchByState(String search){
-         return this.getAllStats().stream()
-                .filter(locationStats -> locationStats.getState().equalsIgnoreCase(search))
-                .collect(Collectors.toList());
+    private LocationStats searchByState(String search){
+        LocationStats stats = null;
+            for(LocationStats s : getAllStats()){
+                if(s.getState().equalsIgnoreCase(search)){
+                    stats = s;
+                }
+            }
+         return stats;
     }
 
     private List<LocationStats> searchByCountry(String search){
